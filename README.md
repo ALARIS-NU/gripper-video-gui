@@ -3,6 +3,22 @@
 * ~~libuvc_camera `sudo apt-get install ros-melodic-libuvc-camera`~~
 * https://github.com/ros-drivers/video_stream_opencv
 
+## How to run?
+1. Publish camera by starting publisher node
+* * `roslaunch fucking_webcam webcam.launch`
+2. Run GUI
+* * `rosrun webcam_control_gui webcam_control_gui.py`
+
+## Limitations
+> There is a problem with dependacies, so if you are using Ubuntu, there is a chance that due to copyright stuff the icons won't appear.
+> Also there is a unknown problem with buttons that make them appear on separate window (press CTRL+P for button window)
+Both of this problems are result of using ROS + Python + OpenCV. But alternative software may result in longer development time.
+
+## How to use
+* start the node
+* open menu (CTRL+P)
+* press needed buttons
+
 ## Nodes
 ```Bash 
 ➜  ~ rostopic list
