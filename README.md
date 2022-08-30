@@ -19,6 +19,9 @@ Both of this problems are result of using ROS + Python + OpenCV. But alternative
 * open menu (CTRL+P)
 * press needed buttons
 
+## Screenshot
+![Alt text](ss1.png?raw=true "Screenshot 1")
+
 ## Nodes
 ```Bash 
 ➜  ~ rostopic list
