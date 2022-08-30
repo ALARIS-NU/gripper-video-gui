@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
+from ast import arg
 import rospy
 import os
 from sensor_msgs.msg import Image
+from std_msgs.msg import String
 import cv2
 from cv_bridge import CvBridge
 from threading import *
+import multiprocessing
 
 # Instantiate CvBridge
 bridge = CvBridge()
@@ -26,23 +29,33 @@ def image_callback(msg):
         # cv2.waitKey(20)
         # print("drawen..")
 
+def changeGoal(*args):
+    global current_goal
+    current_goal = args[1]
 
 def gui():
     cv2.namedWindow("Display", cv2.WINDOW_AUTOSIZE)
     cv2.createButton("Close",closetheapp,None,cv2.QT_PUSH_BUTTON,0)
-    cv2.createButton("Home",closetheapp,None,cv2.QT_PUSH_BUTTON,0)
-    cv2.createButton("Bottle",closetheapp,None,cv2.QT_PUSH_BUTTON,0)
-    cv2.createButton("Ball",closetheapp,None,cv2.QT_PUSH_BUTTON,0)
-    cv2.createButton("Cube",closetheapp,None,cv2.QT_PUSH_BUTTON,0)
+    cv2.createButton("Home",changeGoal,"Home",cv2.QT_PUSH_BUTTON,0)
+    cv2.createButton("Bottle",changeGoal,"Bottle",cv2.QT_PUSH_BUTTON,0)
+    cv2.createButton("Ball",changeGoal,"Ball",cv2.QT_PUSH_BUTTON,0)
+    cv2.createButton("Cube",changeGoal,"Cube",cv2.QT_PUSH_BUTTON,0)
     cv2.imshow("Display", cv2.resize(cv2_img, theimgsize))
     cv2.waitKey()
 
 def ros():
-    rospy.init_node('image_listener')
+    rospy.init_node('theGuiNode')
     image_topic = "/webcam/image_raw"
     rospy.Subscriber(image_topic, Image, image_callback)
     rospy.on_shutdown(onshutdown)
-    rospy.spin()
+
+    pub = rospy.Publisher('/the_gui/goal', String, queue_size=10)
+    rate = rospy.Rate(60)
+    while not rospy.is_shutdown():
+        global current_goal
+        pub.publish(current_goal)
+        rate.sleep()
+    
 
 def onshutdown():
     print("onshutdown triggered...")
@@ -55,9 +68,12 @@ def closetheapp(*args):
     onshutdown()
 
 if __name__ == '__main__':
+    global current_goal
+    current_goal = "Ready"
     t1=Thread(target=gui)
-    t1.start()
+    t1.start() 
     ros()
+    
     
     
     
