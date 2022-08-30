@@ -27,6 +27,7 @@ Both of this problems are result of using ROS + Python + OpenCV. But alternative
 ➜  ~ rostopic list
 /rosout
 /rosout_agg
+/the_gui/goal
 /webcam/camera_info
 /webcam/image_raw
 /webcam/image_raw/compressed
@@ -44,6 +45,10 @@ Both of this problems are result of using ROS + Python + OpenCV. But alternative
 /webcam/webcam_stream/parameter_descriptions
 /webcam/webcam_stream/parameter_updates
 ```
+
+## todo
+* CLI args for sub/pub topics
+* CLI args for img size
 
 ## references
 * ~~https://msadowski.github.io/ros-web-tutorial-pt2-cameras/~~
