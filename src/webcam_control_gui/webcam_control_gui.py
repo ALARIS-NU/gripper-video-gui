@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from ast import arg
+from time import sleep
 import rospy
 import os
 from sensor_msgs.msg import Image
@@ -25,22 +26,21 @@ def image_callback(msg):
         print("CvBridgeError")
     else:
         # print("drawcall...")
-        cv2.imshow("Display", cv2.resize(cv2_img, theimgsize))
+        cv2.imshow("Press CTLR+P for buttons", cv2.resize(cv2_img, theimgsize))
         # cv2.waitKey(20)
         # print("drawen..")
 
 def changeGoal(*args):
-    global current_goal
-    current_goal = args[1]
+    pub.publish(args[1])
 
 def gui():
-    cv2.namedWindow("Display", cv2.WINDOW_AUTOSIZE)
+    cv2.namedWindow("Press CTLR+P for buttons", cv2.WINDOW_AUTOSIZE)
     cv2.createButton("Close",closetheapp,None,cv2.QT_PUSH_BUTTON,0)
     cv2.createButton("Home",changeGoal,"Home",cv2.QT_PUSH_BUTTON,0)
     cv2.createButton("Bottle",changeGoal,"Bottle",cv2.QT_PUSH_BUTTON,0)
     cv2.createButton("Ball",changeGoal,"Ball",cv2.QT_PUSH_BUTTON,0)
     cv2.createButton("Cube",changeGoal,"Cube",cv2.QT_PUSH_BUTTON,0)
-    cv2.imshow("Display", cv2.resize(cv2_img, theimgsize))
+    cv2.imshow("Press CTLR+P for buttons", cv2.resize(cv2_img, theimgsize))
     cv2.waitKey()
 
 def ros():
@@ -48,16 +48,16 @@ def ros():
     image_topic = "/webcam/image_raw"
     rospy.Subscriber(image_topic, Image, image_callback)
     rospy.on_shutdown(onshutdown)
-
+    global pub
+    global statusPub
     pub = rospy.Publisher('/the_gui/goal', String, queue_size=10)
-    rate = rospy.Rate(60)
-    while not rospy.is_shutdown():
-        global current_goal
-        pub.publish(current_goal)
-        rate.sleep()
-    
+    statusPub =  rospy.Publisher('/the_gui/status', String, queue_size=10)
+    sleep(0.1)
+    statusPub.publish("Ready")
 
 def onshutdown():
+    global pub
+    statusPub.publish("Closing")
     print("onshutdown triggered...")
     cv2.destroyAllWindows()
     os._exit(0)
@@ -68,8 +68,6 @@ def closetheapp(*args):
     onshutdown()
 
 if __name__ == '__main__':
-    global current_goal
-    current_goal = "Ready"
     t1=Thread(target=gui)
     t1.start() 
     ros()

@@ -19,6 +19,11 @@ Both of this problems are result of using ROS + Python + OpenCV. But alternative
 * open menu (CTRL+P)
 * press needed buttons
 
+## What does it publish?
+* "Ready" when the GUI is open to the `/the_gui/status`
+* "Home"/"Bottle"/"Ball"/"Cube", to the `/the_gui/goal` when buttons are pressed
+* "Closing", to the `/the_gui/status` when exiting the GUI
+
 ## Screenshot
 ![Alt text](ss1.png?raw=true "Screenshot 1")
 
